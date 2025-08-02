@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive; /* Usamos la fuente del juego */
+}
+
+canvas {
+    border: 4px solid #0FF; /* Cambié a cyan para que destaque más */
+    background: #87CEEB; /* Cielo azul que usas en el juego */
+    display: block;
+}

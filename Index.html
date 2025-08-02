@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=960, initial-scale=1.0" />
+    <title>Salvando Otare</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #contenedor-juego {
+            position: relative;
+            width: 960px;
+            height: 540px;
+            background: #000;
+        }
+        #gameCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 960px;
+            height: 540px;
+            display: block;
+            background: #87CEEB;
+            border: 2px solid #0FF;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="contenedor-juego">
+        <canvas id="gameCanvas" width="960" height="540"></canvas>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
