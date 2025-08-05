@@ -102,7 +102,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#FA0",
         icon: "💥",
         name: "Doble Daño",
-        price: 100,
+        price: 300,
         upgrade: upgradeDanio,
         key: "danio"
     },
@@ -111,7 +111,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#0FF",
         icon: "💨",
         name: "Doble Velocidad",
-        price: 100,
+        price: 200,
         upgrade: upgradeVelocidad,
         key: "velocidad"
     },
@@ -120,7 +120,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#0F0",
         icon: "❤️",
         name: "Doble Vida",
-        price: 200,
+        price: 500,
         upgrade: upgradeVida,
         key: "vida"
     },
@@ -129,7 +129,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#C7FF5E",
         icon: "🟩",
         name: "BonkChanti",
-        price: 500,
+        price: 1250,
         upgrade: upgradeBonkChanti,
         key: "bonkchanti"
     },
@@ -138,7 +138,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#FFD700",
         icon: "💰",
         name: "X2 Monedas",
-        price: 275,
+        price: 675,
         upgrade: upgradeMonedasX2,
         key: "monedasx2"
     },
@@ -147,7 +147,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#D9D9D9",
         icon: "🛡️",
         name: "Armadura",
-        price: 325,
+        price: 800,
         upgrade: upgradeArmadura,
         key: "armadura"
     },
@@ -156,7 +156,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
         color: "#6AEAFF",
         icon: "❄️",
         name: "Otarin",
-        price: 700,
+        price: 1850,
         upgrade: upgradeOtarin,
         key: "otarin"
     },
@@ -165,7 +165,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     color: "#FF2222",
     icon: "✂️",
     name: "Guille",
-    price: 1700,
+    price: 2500,
     upgrade: upgradeGuille,
     key: "guille"
 }
@@ -644,7 +644,7 @@ balasCurativas = [];
     else if (estado === "tienda") {
     // Compra DAÑO
     if (btnCompraDanio.hover && monedas >= 100 && !upgradeDanio) {
-        monedas -= 100;
+        monedas -= 300;
         upgradeDanio = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeDanio", "true");
@@ -652,7 +652,7 @@ balasCurativas = [];
     }
     // Compra VELOCIDAD
     if (btnCompraVelocidad.hover && monedas >= 100 && !upgradeVelocidad) {
-        monedas -= 100;
+        monedas -= 200;
         upgradeVelocidad = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeVelocidad", "true");
@@ -660,7 +660,7 @@ balasCurativas = [];
     }
     // Compra VIDA
     if (btnCompraVida.hover && monedas >= 200 && !upgradeVida) {
-        monedas -= 200;
+        monedas -= 500;
         upgradeVida = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeVida", "true");
@@ -668,7 +668,7 @@ balasCurativas = [];
     }
     // Compra BONKCHANTI
     if (btnCompraBonkChanti.hover && monedas >= 500 && !upgradeBonkChanti) {
-        monedas -= 500;
+        monedas -= 1250;
         upgradeBonkChanti = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeBonkChanti", "true");
@@ -681,7 +681,7 @@ balasCurativas = [];
     }
     // Compra X2 MONEDAS
     if (btnCompraMonedasX2.hover && monedas >= 275 && !upgradeMonedasX2) {
-        monedas -= 275;
+        monedas -= 675;
         upgradeMonedasX2 = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeMonedasX2", "true");
@@ -689,7 +689,7 @@ balasCurativas = [];
     }
     // Compra ARMADURA
     if (btnCompraArmadura.hover && monedas >= 325 && !upgradeArmadura) {
-        monedas -= 325;
+        monedas -= 800;
         upgradeArmadura = true;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeArmadura", "true");
@@ -697,7 +697,7 @@ balasCurativas = [];
     }
     // Compra OTARIN
 if (btnCompraOtarin.hover && monedas >= 700 && !upgradeOtarin) {
-    monedas -= 700;
+    monedas -= 1850;
     upgradeOtarin = true;
     localStorage.setItem("monedas", monedas);
     localStorage.setItem("upgradeOtarin", "true");
@@ -711,7 +711,7 @@ if (btnCompraOtarin.hover && monedas >= 700 && !upgradeOtarin) {
 
 // Compra GUILLE
 if (btnCompraGuille.hover && monedas >= 1275 && !upgradeGuille) {
-    monedas -= 1700;
+    monedas -= 2500;
     upgradeGuille = true;
     localStorage.setItem("monedas", monedas);
     localStorage.setItem("upgradeGuille", "true");
@@ -2072,7 +2072,7 @@ if (supervivenciaDesbloqueado) {
         color: "#FA0",
         icon: "💥",
         name: "Doble Daño",
-        price: 100,
+        price: 300,
         upgrade: upgradeDanio,
         key: "danio"
     },
@@ -2081,7 +2081,7 @@ if (supervivenciaDesbloqueado) {
         color: "#0FF",
         icon: "💨",
         name: "Doble Velocidad",
-        price: 100,
+        price: 200,
         upgrade: upgradeVelocidad,
         key: "velocidad"
     },
@@ -2090,7 +2090,7 @@ if (supervivenciaDesbloqueado) {
         color: "#0F0",
         icon: "❤️",
         name: "Doble Vida",
-        price: 200,
+        price: 500,
         upgrade: upgradeVida,
         key: "vida"
     },
@@ -2099,7 +2099,7 @@ if (supervivenciaDesbloqueado) {
         color: "#C7FF5E",
         icon: "🟩",
         name: "BonkChanti",
-        price: 500,
+        price: 1250,
         upgrade: upgradeBonkChanti,
         key: "bonkchanti"
     },
@@ -2108,7 +2108,7 @@ if (supervivenciaDesbloqueado) {
         color: "#FFD700",
         icon: "💰",
         name: "X2 Monedas",
-        price: 275,
+        price: 675,
         upgrade: upgradeMonedasX2,
         key: "monedasx2"
     },
@@ -2117,7 +2117,7 @@ if (supervivenciaDesbloqueado) {
         color: "#D9D9D9",
         icon: "🛡️",
         name: "Armadura",
-        price: 325,
+        price: 800,
         upgrade: upgradeArmadura,
         key: "armadura"
     },
@@ -2126,7 +2126,7 @@ if (supervivenciaDesbloqueado) {
         color: "#6AEAFF",
         icon: "❄️",
         name: "Otarin",
-        price: 700,
+        price: 1850,
         upgrade: upgradeOtarin,
         key: "otarin"
     },
@@ -2135,7 +2135,7 @@ if (supervivenciaDesbloqueado) {
     color: "#FF2222",
     icon: "✂️",
     name: "Guille",
-    price: 1700,
+    price: 2500,
     upgrade: upgradeGuille,
     key: "guille"
 }
@@ -2559,7 +2559,6 @@ if (guille) {
                 y: -120,
                 objetivo: enemigo,
                 tiempo: 0
-
             });
             guille.cooldownRayo = 90; // 1.5 segundos (60fps)
         }
@@ -2567,33 +2566,34 @@ if (guille) {
     if (guille.cooldownRayo > 0) guille.cooldownRayo--;
 
     // Disparo tijera cada 1s
-if (guille.cooldownTijera <= 0) {
-    let enemigo = enemigoMasCercano(guille.x, guille.y);
-    if (enemigo && enemigo.vida > 0) {
-        let origenX = guille.x + guille.width / 2;
-        let origenY = guille.y + guille.height / 2;
-        let destinoX = enemigo.x + enemigo.width / 2;
-        let destinoY = enemigo.y + enemigo.height / 2;
-        let dx = destinoX - origenX;
-        let dy = destinoY - origenY;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        let vel = 11;
-        let vx = (dx / dist) * vel;
-        let vy = (dy / dist) * vel;
-        tijerasGuille.push({
-            x: origenX,
-            y: origenY,
-            vx: vx,
-            vy: vy,
-            radio: 20,
-            angulo: 0,
-            objetivo: enemigo,
-            tiempo: 0
-        });
-        guille.cooldownTijera = 60; // 1 segundo
+    if (guille.cooldownTijera <= 0) {
+        let enemigo = enemigoMasCercano(guille.x, guille.y);
+        if (enemigo && enemigo.vida > 0) {
+            let origenX = guille.x + guille.width / 2;
+            let origenY = guille.y + guille.height / 2;
+            let destinoX = enemigo.x + enemigo.width / 2;
+            let destinoY = enemigo.y + enemigo.height / 2;
+            let dx = destinoX - origenX;
+            let dy = destinoY - origenY;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            let vel = 11;
+            let vx = (dx / dist) * vel;
+            let vy = (dy / dist) * vel;
+            tijerasGuille.push({
+                x: origenX,
+                y: origenY,
+                vx: vx,
+                vy: vy,
+                radio: 20,
+                angulo: 0,
+                objetivo: enemigo,
+                tiempo: 0,
+                direccionFija: {vx, vy}
+            });
+            guille.cooldownTijera = 60; // 1 segundo
+        }
     }
-}
-if (guille.cooldownTijera > 0) guille.cooldownTijera--;
+    if (guille.cooldownTijera > 0) guille.cooldownTijera--;
 
     // Dibuja Guille (rojo luminoso)
     ctx.save();
@@ -2672,13 +2672,71 @@ for (let i = rayosGuille.length - 1; i >= 0; i--) {
         rayosGuille.splice(i, 1);
         continue;
     }
-    
+}
+
+// ---- TIJERAS GUILLE ----
+for (let i = tijerasGuille.length - 1; i >= 0; i--) {
+    let tijera = tijerasGuille[i];
+    // AVANZA SIEMPRE RECTO (NO recalcula dirección)
+    tijera.x += tijera.direccionFija.vx;
+    tijera.y += tijera.direccionFija.vy;
+    tijera.angulo += 0.35;
+    tijera.tiempo++;
+    // Dibuja tijera girando
+    ctx.save();
+    ctx.translate(tijera.x - camaraX, tijera.y);
+    ctx.rotate(tijera.angulo);
+    ctx.font = "36px 'Press Start 2P'";
+    ctx.fillStyle = "#FFF";
+    ctx.shadowColor = "#FF2222";
+    ctx.shadowBlur = 16;
+    ctx.fillText("✂️", 0, 0);
+    ctx.restore();
+
+    // Partículas alrededor de la tijera
+    for (let p = 0; p < 2; p++) {
+        particulas.push({
+            x: tijera.x - camaraX + (Math.random()-0.5)*18,
+            y: tijera.y + (Math.random()-0.5)*18,
+            size: 5 + Math.random()*4,
+            color: "#FF2222",
+            vida: 11 + Math.random()*8,
+            velX: (Math.random()-0.5)*3,
+            velY: (Math.random()-0.5)*3,
+            gravedad: 0.15
+        });
+    }
+
+    // Daño a enemigos + suma monedas
+    for (let enemigo of enemigos) {
+        if (
+            enemigo.vida > 0 &&
+            Math.abs(enemigo.x + enemigo.width/2 - tijera.x) < 29 &&
+            Math.abs(enemigo.y + enemigo.height/2 - tijera.y) < 29
+        ) {
+            enemigo.vida -= 30;
+            if (enemigo.vida < 0) enemigo.vida = 0;
+
+            // SUMA MONEDAS (X2 si tienes el upgrade)
+            let multiplicador = upgradeMonedasX2 ? 2 : 1;
+            if (!enemigo.sueltoMoneda && enemigo.vida <= 0) {
+                if (enemigo.tipo === "jefe") {
+                    monedas += 50 * multiplicador;
+                    monedasRecoleccionPartida += 50 * multiplicador;
+                } else {
+                    monedas += 1 * multiplicador;
+                    monedasRecoleccionPartida += 1 * multiplicador;
+                }
+                enemigo.sueltoMoneda = true;
+                localStorage.setItem("monedas", monedas);
+            }
+        }
+    }
     // Fuera del canvas
     if (tijera.x < 0 || tijera.x > suelo.width || tijera.y < 0 || tijera.y > canvas.height) {
         tijerasGuille.splice(i, 1);
     }
 }
-
 
 drawVidaJugador(jugadores[0], 0);
 drawVidaJugador(jugadores[1], 38);
@@ -2728,6 +2786,4 @@ else if (estado === "tienda") {
 
     loop();
 };
-
-
 
