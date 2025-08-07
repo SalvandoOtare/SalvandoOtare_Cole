@@ -170,6 +170,39 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     key: "guille"
 }
 ];
+// ===== SISTEMA DE MISIONES =====
+const misiones = [
+    { nombre: "Principiante Honrado", descripcion: "Llega a la ronda 15 en adelante.", recompensa: 100, tipo: "ronda", objetivo: 15 },
+    { nombre: "Boxeador", descripcion: "Mata 40 enemigos con Lanzziano.", recompensa: 120, tipo: "killsLanzziano", objetivo: 40 },
+    { nombre: "Mike Lanzz-Tyson", descripcion: "Mata 260 enemigos con Lanzziano.", recompensa: 500, tipo: "killsLanzziano", objetivo: 260 },
+    { nombre: "Tirador", descripcion: "Mata 40 enemigos con Jhoabxi.", recompensa: 100, tipo: "killsJhoabxi", objetivo: 40 },
+    { nombre: "Tiro Fijo-xi", descripcion: "Mata 260 enemigos con Jhoabxi.", recompensa: 400, tipo: "killsJhoabxi", objetivo: 260 },
+    { nombre: "GANADOR!!!", descripcion: "Completa en modo normal y vence al jefe final.", recompensa: 600, tipo: "jefeNormal", objetivo: 1 },
+    { nombre: "Ganador Otra Vez?", descripcion: "Llega a la ronda 21 en el modo supervivencia.", recompensa: 601, tipo: "rondaSupervivencia", objetivo: 21 },
+    { nombre: "CUANDO ACABA!?", descripcion: "Llega a la ronda 60 en el modo supervivencia.", recompensa: 1050, tipo: "rondaSupervivencia", objetivo: 60 },
+    { nombre: "Como Llegamos hasta aqui?!", descripcion: "Llega a la ronda 100 en el modo supervivencia.", recompensa: 1500, tipo: "rondaSupervivencia", objetivo: 100 },
+    { nombre: "Comprador", descripcion: "Compra 3 objetos en la tienda.", recompensa: 300, tipo: "compras", objetivo: 3 },
+    { nombre: "LOTERIA", descripcion: "Compra TODA LA TIENDA.", recompensa: 2000, tipo: "comprasTotal", objetivo: 8 },
+    { nombre: "A Curar", descripcion: "Compra a BonkChanti.", recompensa: 490, tipo: "compraBonkChanti", objetivo: 1 },
+    { nombre: "Hace Frio en la Cima", descripcion: "Compra a Otarin.", recompensa: 700, tipo: "compraOtarin", objetivo: 1 },
+    { nombre: "A Oliver le Callo un Meteorito", descripcion: "Compra a Guille.", recompensa: 1111, tipo: "compraGuille", objetivo: 1 }
+];
+
+// Progreso de misiones, guardado en localStorage
+let progresoMisiones = JSON.parse(localStorage.getItem("progresoMisiones") || "{}");
+let paginaMisiones = 0;
+const MISIONES_POR_PAGINA = 3;
+
+// Variables para el botón misiones y paginación
+const botonMisiones = { x: 20, y: 100, width: 110, height: 60, hover: false };
+const flechaIzqMisiones = { x: 40, y: 260, width: 50, height: 50, hover: false };
+const flechaDerMisiones = { x: 830, y: 260, width: 50, height: 50, hover: false };
+const btnSalirMisiones = { x: 380, y: 400, width: 200, height: 50, hover: false };
+
+// Contadores para misiones de kills y compras
+let killsLanzziano = 0;
+let killsJhoabxi = 0;
+let comprasRealizadas = 0;
 
     // ===== ELEMENTOS DEL JUEGO =====
     const nubes = [
@@ -520,6 +553,16 @@ if (e.code === "KeyM") {
             my > botonJugar.y && my < botonJugar.y + botonJugar.height;
         botonTienda.hover = mx > botonTienda.x && mx < botonTienda.x + botonTienda.width &&
             my > botonTienda.y && my < botonTienda.y + botonTienda.height;
+        botonMisiones.hover = mx > botonMisiones.x && mx < botonMisiones.x + botonMisiones.width &&
+    my > botonMisiones.y && my < botonMisiones.y + botonMisiones.height;
+    if (estado === "misiones") {
+    flechaIzqMisiones.hover = paginaMisiones > 0 && mx > flechaIzqMisiones.x && mx < flechaIzqMisiones.x + flechaIzqMisiones.width &&
+        my > flechaIzqMisiones.y && my < flechaIzqMisiones.y + flechaIzqMisiones.height;
+    flechaDerMisiones.hover = (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length && mx > flechaDerMisiones.x && mx < flechaDerMisiones.x + flechaDerMisiones.width &&
+        my > flechaDerMisiones.y && my < flechaDerMisiones.y + flechaDerMisiones.height;
+    btnSalirMisiones.hover = mx > btnSalirMisiones.x && mx < btnSalirMisiones.x + btnSalirMisiones.width &&
+        my > btnSalirMisiones.y && my < btnSalirMisiones.y + btnSalirMisiones.height;
+}
         // Hover en el botón de supervivencia si está desbloqueado
         if (typeof botonSupervivencia !== 'undefined' && recordRonda >= 20) {
             botonSupervivencia.hover = mx > botonSupervivencia.x && mx < botonSupervivencia.x + botonSupervivencia.width &&
@@ -585,6 +628,27 @@ if (estado === "menu" && typeof botonSupervivencia !== 'undefined' && botonSuper
     window.modoSupervivencia = true;
     iniciarCinematica();
     return;
+}
+if (estado === "menu" && botonMisiones.hover) {
+    estado = "misiones";
+    resetHovers();
+    return;
+}
+if (estado === "misiones") {
+    if (flechaIzqMisiones.hover && paginaMisiones > 0) {
+        paginaMisiones--;
+        return;
+    }
+    if (flechaDerMisiones.hover && (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
+        paginaMisiones++;
+        return;
+    }
+    if (btnSalirMisiones.hover) {
+        estado = "menu";
+        resetHovers();
+        setTimeout(() => { drawMenu(); }, 100);
+        return;
+    }
 }
     else if (estado === "menu" && botonTienda.hover) {
         estado = "tienda";
@@ -1944,6 +2008,17 @@ if (supervivenciaDesbloqueado) {
             fontSize: 32
         }
     );
+    drawButton(
+    botonMisiones,
+    "MISIONES",
+    {
+        gradColors: botonMisiones.hover ? ["#FA0", "#FFD700"] : ["#FFD700", "#FA0"],
+        borderColor: "#FFD700",
+        shadowColor: "#FFD700",
+        fontColor: "#111",
+        fontSize: 22
+    }
+);
     // Nuevo botón MODO SUPERVIVENCIA
     if (typeof botonSupervivencia === 'undefined') {
         // Defínelo si no existe
@@ -2033,6 +2108,180 @@ if (supervivenciaDesbloqueado) {
     ctx.shadowBlur = 5;
     ctx.fillText("🪙 " + monedas, x + w / 2, y + h / 2 + 1);
     ctx.restore();
+}
+
+function drawMisiones() {
+    // Fondo llamativo
+    let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, "#272b4e");
+    grad.addColorStop(1, "#191e2e");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Título
+    ctx.save();
+    ctx.font = "bold 48px 'Press Start 2P'";
+    ctx.textAlign = "center";
+    ctx.shadowColor = "#FFD700";
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = "#FFD700";
+    ctx.fillText("MISIONES", canvas.width / 2, 70);
+    ctx.restore();
+
+    // Muestra misiones por página
+    const misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
+    const baseX = 150, sepX = 270, baseY = 170;
+
+    misionesPagina.forEach((mision, i) => {
+        let x = baseX + i * sepX;
+        let y = baseY;
+
+        // Cartel
+        ctx.save();
+        ctx.shadowColor = "#FFD700";
+        ctx.shadowBlur = 18;
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = "#FFF";
+        ctx.fillStyle = "#292929";
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 120, y);
+        ctx.quadraticCurveTo(x + 140, y, x + 140, y + 20);
+        ctx.lineTo(x + 140, y + 160);
+        ctx.quadraticCurveTo(x + 140, y + 180, x + 120, y + 180);
+        ctx.lineTo(x, y + 180);
+        ctx.quadraticCurveTo(x - 20, y + 180, x - 20, y + 160);
+        ctx.lineTo(x - 20, y + 20);
+        ctx.quadraticCurveTo(x - 20, y, x, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+
+        // Nombre
+        ctx.font = "20px 'Press Start 2P'";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#FFD700";
+        ctx.fillText(mision.nombre, x + 60, y + 34);
+
+        // Descripción
+        ctx.font = "13px 'Press Start 2P'";
+        ctx.fillStyle = "#0FF";
+        ctx.fillText(mision.descripcion, x + 60, y + 70);
+
+        // Recompensa
+        ctx.font = "16px 'Press Start 2P'";
+        ctx.fillStyle = "#FA0";
+        ctx.fillText("Recompensa: " + mision.recompensa + " 🪙", x + 60, y + 125);
+
+        // Estado de la misión
+        let key = mision.nombre;
+        let completada = progresoMisiones[key] && progresoMisiones[key].completada;
+        ctx.font = "15px 'Press Start 2P'";
+        ctx.fillStyle = completada ? "#11FF44" : "#FF2222";
+        ctx.fillText(completada ? "COMPLETADA ✔️" : "NO COMPLETADA", x + 60, y + 155);
+    });
+
+    // Flechas de paginación
+    if (paginaMisiones > 0) {
+        drawButton(flechaIzqMisiones, "<", {fontSize: 30, gradColors: ["#0F0", "#FFD700"], borderColor: "#FFD700"});
+    }
+    if ((paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
+        drawButton(flechaDerMisiones, ">", {fontSize: 30, gradColors: ["#0F0", "#FFD700"], borderColor: "#FFD700"});
+    }
+
+    // Botón salir
+    drawButton(btnSalirMisiones, "SALIR", {gradColors: ["#FFD700", "#333"], borderColor: "#FFD700", fontColor: "#222", fontSize: 22});
+}
+
+function actualizarProgresoMision(tipo, cantidad = 1) {
+    misiones.forEach(mision => {
+        let key = mision.nombre;
+        if (!progresoMisiones[key]) progresoMisiones[key] = { progreso: 0, completada: false };
+        if (!progresoMisiones[key].completada) {
+            switch (mision.tipo) {
+                case "ronda":
+                    if (ronda >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "rondaSupervivencia":
+                    if (window.modoSupervivencia && ronda >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "killsLanzziano":
+                    progresoMisiones[key].progreso = killsLanzziano;
+                    if (killsLanzziano >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "killsJhoabxi":
+                    progresoMisiones[key].progreso = killsJhoabxi;
+                    if (killsJhoabxi >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "compras":
+                    progresoMisiones[key].progreso = comprasRealizadas;
+                    if (comprasRealizadas >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "comprasTotal":
+                    let totalCompras = [
+                        upgradeDanio, upgradeVelocidad, upgradeVida, upgradeBonkChanti,
+                        upgradeMonedasX2, upgradeArmadura, upgradeOtarin, upgradeGuille
+                    ].filter(Boolean).length;
+                    progresoMisiones[key].progreso = totalCompras;
+                    if (totalCompras >= mision.objetivo) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "compraBonkChanti":
+                    if (upgradeBonkChanti) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "compraOtarin":
+                    if (upgradeOtarin) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "compraGuille":
+                    if (upgradeGuille) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+                case "jefeNormal":
+                    if (!window.modoSupervivencia && jefeFinalDerrotado) {
+                        progresoMisiones[key].completada = true;
+                        monedas += mision.recompensa;
+                        localStorage.setItem("monedas", monedas);
+                    }
+                    break;
+            }
+        }
+    });
+    localStorage.setItem("progresoMisiones", JSON.stringify(progresoMisiones));
 }
     function drawTienda() {
     // Fondo moderno con gradiente
@@ -2260,7 +2509,12 @@ if (supervivenciaDesbloqueado) {
             drawMenu();
         } else if (estado === "cinematica") {
             mostrarFraseCinematica();
-        } else if (estado === "jugando") {
+        } 
+        
+        if (estado === "misiones") {
+    drawMisiones();
+    return; // Opcional, para que no dibuje otras cosas
+}else if (estado === "jugando") {
             for (let i = 0; i < jugadores.length; i++) {
                 actualizarJugador(jugadores[i], i);
             }
@@ -2654,6 +2908,20 @@ for (let i = rayosGuille.length - 1; i >= 0; i--) {
             ) {
                 enemigo.vida -= 50;
                 if (enemigo.vida < 0) enemigo.vida = 0;
+
+                // SUMA MONEDAS (X2 si tienes el upgrade)
+                let multiplicador = upgradeMonedasX2 ? 2 : 1;
+                if (!enemigo.sueltoMoneda && enemigo.vida <= 0) {
+                    if (enemigo.tipo === "jefe") {
+                        monedas += 50 * multiplicador;
+                        monedasRecoleccionPartida += 50 * multiplicador;
+                    } else {
+                        monedas += 1 * multiplicador;
+                        monedasRecoleccionPartida += 1 * multiplicador;
+                    }
+                    enemigo.sueltoMoneda = true;
+                    localStorage.setItem("monedas", monedas);
+                }
             }
         }
         // Partículas de explosión grandes
