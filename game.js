@@ -556,13 +556,23 @@ if (e.code === "KeyM") {
         botonMisiones.hover = mx > botonMisiones.x && mx < botonMisiones.x + botonMisiones.width &&
     my > botonMisiones.y && my < botonMisiones.y + botonMisiones.height;
     if (estado === "misiones") {
-    flechaIzqMisiones.hover = paginaMisiones > 0 && mx > flechaIzqMisiones.x && mx < flechaIzqMisiones.x + flechaIzqMisiones.width &&
-        my > flechaIzqMisiones.y && my < flechaIzqMisiones.y + flechaIzqMisiones.height;
-    flechaDerMisiones.hover = (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length && mx > flechaDerMisiones.x && mx < flechaDerMisiones.x + flechaDerMisiones.width &&
-        my > flechaDerMisiones.y && my < flechaDerMisiones.y + flechaDerMisiones.height;
-    btnSalirMisiones.hover = mx > btnSalirMisiones.x && mx < btnSalirMisiones.x + btnSalirMisiones.width &&
-        my > btnSalirMisiones.y && my < btnSalirMisiones.y + btnSalirMisiones.height;
-}
+        // Flechas
+        flechaIzqMisiones.hover = mx > flechaIzqMisiones.x && mx < flechaIzqMisiones.x + flechaIzqMisiones.width &&
+            my > flechaIzqMisiones.y && my < flechaIzqMisiones.y + flechaIzqMisiones.height;
+        flechaDerMisiones.hover = mx > flechaDerMisiones.x && mx < flechaDerMisiones.x + flechaDerMisiones.width &&
+            my > flechaDerMisiones.y && my < flechaDerMisiones.y + flechaDerMisiones.height;
+        btnSalirMisiones.hover = mx > btnSalirMisiones.x && mx < btnSalirMisiones.x + btnSalirMisiones.width &&
+            my > btnSalirMisiones.y && my < btnSalirMisiones.y + btnSalirMisiones.height;
+
+        // Hover para botón reclamar de cada misión
+        let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
+        misionesPagina.forEach(mision => {
+            let btn = mision._btnReclamar;
+            if (btn) {
+                mision.btnReclamarHover = mx > btn.x && mx < btn.x + btn.width && my > btn.y && my < btn.y + btn.height;
+            }
+        });
+    }
         // Hover en el botón de supervivencia si está desbloqueado
         if (typeof botonSupervivencia !== 'undefined' && recordRonda >= 20) {
             botonSupervivencia.hover = mx > botonSupervivencia.x && mx < botonSupervivencia.x + botonSupervivencia.width &&
@@ -635,21 +645,32 @@ if (estado === "menu" && botonMisiones.hover) {
     return;
 }
 if (estado === "misiones") {
-    if (flechaIzqMisiones.hover && paginaMisiones > 0) {
-        paginaMisiones--;
-        return;
+        if (flechaIzqMisiones.hover && paginaMisiones > 0) {
+            paginaMisiones--;
+            return;
+        }
+        if (flechaDerMisiones.hover && (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
+            paginaMisiones++;
+            return;
+        }
+        if (btnSalirMisiones.hover) {
+            estado = "menu";
+            resetHovers();
+            setTimeout(() => { drawMenu(); }, 100);
+            return;
+        }
+        // Click en "reclamar"
+        let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
+        misionesPagina.forEach(mision => {
+            let key = mision.nombre;
+            let puedeReclamar = progresoMisiones[key] && progresoMisiones[key].completada && !progresoMisiones[key].reclamado;
+            let btn = mision._btnReclamar;
+            if (btn && mision.btnReclamarHover && puedeReclamar) {
+                progresoMisiones[key].reclamado = true;
+                localStorage.setItem("progresoMisiones", JSON.stringify(progresoMisiones));
+            }
+        });
     }
-    if (flechaDerMisiones.hover && (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
-        paginaMisiones++;
-        return;
-    }
-    if (btnSalirMisiones.hover) {
-        estado = "menu";
-        resetHovers();
-        setTimeout(() => { drawMenu(); }, 100);
-        return;
-    }
-}
     else if (estado === "menu" && botonTienda.hover) {
         estado = "tienda";
         resetHovers();
@@ -2128,72 +2149,101 @@ function drawMisiones() {
     ctx.fillText("MISIONES", canvas.width / 2, 70);
     ctx.restore();
 
-    // Muestra misiones por página
+    // Muestra misiones por página (horizontal, tipo ficha)
     const misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
-    const baseX = 150, sepX = 270, baseY = 170;
+    const baseY = 150, sepY = 110, cardWidth = 740, cardHeight = 96, cardX = 110;
 
     misionesPagina.forEach((mision, i) => {
-        let x = baseX + i * sepX;
-        let y = baseY;
-
-        // Cartel
-        ctx.save();
-        ctx.shadowColor = "#FFD700";
-        ctx.shadowBlur = 18;
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = "#FFF";
-        ctx.fillStyle = "#292929";
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + 120, y);
-        ctx.quadraticCurveTo(x + 140, y, x + 140, y + 20);
-        ctx.lineTo(x + 140, y + 160);
-        ctx.quadraticCurveTo(x + 140, y + 180, x + 120, y + 180);
-        ctx.lineTo(x, y + 180);
-        ctx.quadraticCurveTo(x - 20, y + 180, x - 20, y + 160);
-        ctx.lineTo(x - 20, y + 20);
-        ctx.quadraticCurveTo(x - 20, y, x, y);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.restore();
-
-        // Nombre
-        ctx.font = "20px 'Press Start 2P'";
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#FFD700";
-        ctx.fillText(mision.nombre, x + 60, y + 34);
-
-        // Descripción
-        ctx.font = "13px 'Press Start 2P'";
-        ctx.fillStyle = "#0FF";
-        ctx.fillText(mision.descripcion, x + 60, y + 70);
-
-        // Recompensa
-        ctx.font = "16px 'Press Start 2P'";
-        ctx.fillStyle = "#FA0";
-        ctx.fillText("Recompensa: " + mision.recompensa + " 🪙", x + 60, y + 125);
-
-        // Estado de la misión
+        let y = baseY + i * sepY;
         let key = mision.nombre;
         let completada = progresoMisiones[key] && progresoMisiones[key].completada;
+
+        // Ficha horizontal (como la imagen)
+        ctx.save();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#FFD700";
+        ctx.fillStyle = "#191e2e";
+        ctx.beginPath();
+        ctx.rect(cardX, y, cardWidth, cardHeight);
+        ctx.closePath();
+        ctx.globalAlpha = 0.95;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.stroke();
+
+        // Nombre
+        ctx.font = "bold 22px 'Press Start 2P'";
+        ctx.fillStyle = "#FFD700";
+        ctx.textAlign = "left";
+        ctx.fillText("N. " + mision.nombre, cardX + 22, y + 32);
+
+        // Descripción
         ctx.font = "15px 'Press Start 2P'";
+        ctx.fillStyle = "#0FF";
+        ctx.fillText(mision.descripcion, cardX + 22, y + 62);
+
+        // Recompensa
+        ctx.font = "15px 'Press Start 2P'";
+        ctx.fillStyle = "#FA0";
+        ctx.fillText("Recompensa: " + mision.recompensa + " 🪙", cardX + 22, y + 88);
+
+        // Completado o no
+        ctx.font = "15px 'Press Start 2P'";
+        ctx.textAlign = "right";
         ctx.fillStyle = completada ? "#11FF44" : "#FF2222";
-        ctx.fillText(completada ? "COMPLETADA ✔️" : "NO COMPLETADA", x + 60, y + 155);
+        ctx.fillText(completada ? "COMPLETADA ✔️" : "NO COMPLETADA", cardX + cardWidth - 30, y + 32);
+
+        // Botón reclamar (solo si completado y no reclamado)
+        let btnReclamar = {
+            x: cardX + cardWidth - 160,
+            y: y + cardHeight - 42,
+            width: 120,
+            height: 32,
+            hover: mision.btnReclamarHover || false
+        };
+        let puedeReclamar = completada && !(progresoMisiones[key] && progresoMisiones[key].reclamado);
+        let reclamarText = puedeReclamar ? "RECLAMAR" : (progresoMisiones[key] && progresoMisiones[key].reclamado ? "RECLAMADO" : "...");
+        drawButton(
+            btnReclamar,
+            reclamarText,
+            {
+                gradColors: puedeReclamar
+                    ? (btnReclamar.hover ? ["#11FF44", "#FFD700"] : ["#FFD700", "#11FF44"])
+                    : ["#888", "#444"],
+                borderColor: puedeReclamar ? "#FFD700" : "#888",
+                fontColor: puedeReclamar ? "#222" : "#222",
+                fontSize: 17
+            }
+        );
+        // Guarda hitbox para hover/click en btn
+        mision._btnReclamar = btnReclamar;
     });
 
-    // Flechas de paginación
-    if (paginaMisiones > 0) {
-        drawButton(flechaIzqMisiones, "<", {fontSize: 30, gradColors: ["#0F0", "#FFD700"], borderColor: "#FFD700"});
-    }
-    if ((paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
-        drawButton(flechaDerMisiones, ">", {fontSize: 30, gradColors: ["#0F0", "#FFD700"], borderColor: "#FFD700"});
-    }
+    // Flechas de paginación (más grandes y mejor hitbox)
+    drawButton(
+        flechaIzqMisiones,
+        "<",
+        {
+            gradColors: flechaIzqMisiones.hover ? ["#FFD700", "#0F0"] : ["#444", "#FFD700"],
+            borderColor: "#FFD700",
+            fontColor: "#222",
+            fontSize: 38
+        }
+    );
+    drawButton(
+        flechaDerMisiones,
+        ">",
+        {
+            gradColors: flechaDerMisiones.hover ? ["#FFD700", "#0F0"] : ["#444", "#FFD700"],
+            borderColor: "#FFD700",
+            fontColor: "#222",
+            fontSize: 38
+        }
+    );
 
     // Botón salir
-    drawButton(btnSalirMisiones, "SALIR", {gradColors: ["#FFD700", "#333"], borderColor: "#FFD700", fontColor: "#222", fontSize: 22});
+    drawButton(btnSalirMisiones, "SALIR", {gradColors: ["#FFD700", "#333"], borderColor: "#FFD700", fontColor: "#222", fontSize: 23});
 }
-
 function actualizarProgresoMision(tipo, cantidad = 1) {
     misiones.forEach(mision => {
         let key = mision.nombre;
@@ -3054,4 +3104,7 @@ else if (estado === "tienda") {
 
     loop();
 };
+
+
+
 
