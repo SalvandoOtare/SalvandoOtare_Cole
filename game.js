@@ -554,29 +554,34 @@ if (e.code === "KeyM") {
         botonTienda.hover = mx > botonTienda.x && mx < botonTienda.x + botonTienda.width &&
             my > botonTienda.y && my < botonTienda.y + botonTienda.height;
         botonMisiones.hover = mx > botonMisiones.x && mx < botonMisiones.x + botonMisiones.width &&
-    my > botonMisiones.y && my < botonMisiones.y + botonMisiones.height;
-    if (estado === "misiones") {
-    flechaIzqMisiones.hover = mx > flechaIzqMisiones.x && mx < flechaIzqMisiones.x + flechaIzqMisiones.width &&
-        my > flechaIzqMisiones.y && my < flechaIzqMisiones.y + flechaIzqMisiones.height;
-    flechaDerMisiones.hover = mx > flechaDerMisiones.x && mx < flechaDerMisiones.x + flechaDerMisiones.width &&
-        my > flechaDerMisiones.y && my < flechaDerMisiones.y + flechaDerMisiones.height;
-    btnSalirMisiones.hover = mx > btnSalirMisiones.x && mx < btnSalirMisiones.x + btnSalirMisiones.width &&
-        my > btnSalirMisiones.y && my < btnSalirMisiones.y + btnSalirMisiones.height;
-
-    let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
-    misionesPagina.forEach(mision => {
-        let btn = mision._btnReclamar;
-        mision.btnReclamarHover = false;
-        if (btn) {
-            if (
-                mx > btn.x && mx < btn.x + btn.width &&
-                my > btn.y && my < btn.y + btn.height
-            ) {
-                mision.btnReclamarHover = true;
-            }
+            my > botonMisiones.y && my < botonMisiones.y + botonMisiones.height;
+        // Hover en el botón de supervivencia si está desbloqueado
+        if (typeof botonSupervivencia !== 'undefined' && recordRonda >= 20) {
+            botonSupervivencia.hover = mx > botonSupervivencia.x && mx < botonSupervivencia.x + botonSupervivencia.width &&
+                my > botonSupervivencia.y && my < botonSupervivencia.y + botonSupervivencia.height;
         }
-    });
-}
+    } else if (estado === "misiones") {
+        flechaIzqMisiones.hover = mx > flechaIzqMisiones.x && mx < flechaIzqMisiones.x + flechaIzqMisiones.width &&
+            my > flechaIzqMisiones.y && my < flechaIzqMisiones.y + flechaIzqMisiones.height;
+        flechaDerMisiones.hover = mx > flechaDerMisiones.x && mx < flechaDerMisiones.x + flechaDerMisiones.width &&
+            my > flechaDerMisiones.y && my < flechaDerMisiones.y + flechaDerMisiones.height;
+        btnSalirMisiones.hover = mx > btnSalirMisiones.x && mx < btnSalirMisiones.x + btnSalirMisiones.width &&
+            my > btnSalirMisiones.y && my < btnSalirMisiones.y + btnSalirMisiones.height;
+
+        let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
+        misionesPagina.forEach(mision => {
+            let btn = mision._btnReclamar;
+            mision.btnReclamarHover = false;
+            if (btn) {
+                if (
+                    mx > btn.x && mx < btn.x + btn.width &&
+                    my > btn.y && my < btn.y + btn.height
+                ) {
+                    mision.btnReclamarHover = true;
+                }
+            }
+        });
+
         // Hover en el botón de supervivencia si está desbloqueado
         if (typeof botonSupervivencia !== 'undefined' && recordRonda >= 20) {
             botonSupervivencia.hover = mx > botonSupervivencia.x && mx < botonSupervivencia.x + botonSupervivencia.width &&
@@ -651,18 +656,15 @@ if (estado === "menu" && botonMisiones.hover) {
 if (estado === "misiones") {
     if (flechaIzqMisiones.hover && paginaMisiones > 0) {
         paginaMisiones--;
-        drawMisiones(); // <-- repinta tras click
         return;
     }
     if (flechaDerMisiones.hover && (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
         paginaMisiones++;
-        drawMisiones();
         return;
     }
     if (btnSalirMisiones.hover) {
         estado = "menu";
         resetHovers();
-        drawMenu(); // <-- repinta tras salir
         return;
     }
     let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
@@ -675,7 +677,6 @@ if (estado === "misiones") {
             monedas += mision.recompensa;
             localStorage.setItem("progresoMisiones", JSON.stringify(progresoMisiones));
             localStorage.setItem("monedas", monedas);
-            drawMisiones(); // <-- repinta tras reclamar
         }
     });
 }
