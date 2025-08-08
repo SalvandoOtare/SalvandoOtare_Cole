@@ -2,8 +2,6 @@ window.onload = () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-   
-
     canvas.width = 960;
     canvas.height = 540;
 
@@ -2318,6 +2316,16 @@ function drawMisiones() {
     });
 }
 function actualizarProgresoMision(tipo, cantidad = 1) {
+    // Refresca upgrades de la tienda antes de chequear
+    upgradeDanio = localStorage.getItem("upgradeDanio") === "true";
+    upgradeVelocidad = localStorage.getItem("upgradeVelocidad") === "true";
+    upgradeVida = localStorage.getItem("upgradeVida") === "true";
+    upgradeBonkChanti = localStorage.getItem("upgradeBonkChanti") === "true";
+    upgradeMonedasX2 = localStorage.getItem("upgradeMonedasX2") === "true";
+    upgradeArmadura = localStorage.getItem("upgradeArmadura") === "true";
+    upgradeOtarin = localStorage.getItem("upgradeOtarin") === "true";
+    upgradeGuille = localStorage.getItem("upgradeGuille") === "true";
+
     misiones.forEach(mision => {
         let key = mision.nombre;
         if (!progresoMisiones[key]) progresoMisiones[key] = { progreso: 0, completada: false };
@@ -2326,39 +2334,29 @@ function actualizarProgresoMision(tipo, cantidad = 1) {
                 case "ronda":
                     if (ronda >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "rondaSupervivencia":
                     if (window.modoSupervivencia && ronda >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "killsLanzziano":
                     progresoMisiones[key].progreso = killsLanzziano;
                     if (killsLanzziano >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "killsJhoabxi":
                     progresoMisiones[key].progreso = killsJhoabxi;
                     if (killsJhoabxi >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "compras":
                     progresoMisiones[key].progreso = comprasRealizadas;
                     if (comprasRealizadas >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "comprasTotal":
@@ -2369,36 +2367,26 @@ function actualizarProgresoMision(tipo, cantidad = 1) {
                     progresoMisiones[key].progreso = totalCompras;
                     if (totalCompras >= mision.objetivo) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "compraBonkChanti":
                     if (upgradeBonkChanti) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "compraOtarin":
                     if (upgradeOtarin) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "compraGuille":
                     if (upgradeGuille) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
                 case "jefeNormal":
                     if (!window.modoSupervivencia && jefeFinalDerrotado) {
                         progresoMisiones[key].completada = true;
-                        monedas += mision.recompensa;
-                        localStorage.setItem("monedas", monedas);
                     }
                     break;
             }
@@ -3177,4 +3165,5 @@ else if (estado === "tienda") {
 
     loop();
 };
+
 
