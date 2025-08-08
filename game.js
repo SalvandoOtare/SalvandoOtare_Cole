@@ -2190,9 +2190,19 @@ function drawMisiones() {
         ctx.stroke();
         ctx.restore();
 
-        // Nombre misión
+        // Nombre misión - AJUSTE DE TAMAÑO
         ctx.save();
-        ctx.font = "bold 28px 'Press Start 2P', Arial";
+        let nombreBase = 28; // px
+        let nombreSize = nombreBase;
+        ctx.font = `bold ${nombreSize}px 'Press Start 2P', Arial`;
+        let nombreWidth = ctx.measureText("N. " + mision.nombre).width;
+        if (nombreWidth > cardWidth - 120) {
+            while (nombreWidth > cardWidth - 120 && nombreSize > 13) {
+                nombreSize -= 1;
+                ctx.font = `bold ${nombreSize}px 'Press Start 2P', Arial`;
+                nombreWidth = ctx.measureText("N. " + mision.nombre).width;
+            }
+        }
         ctx.fillStyle = "#FFD700";
         ctx.textAlign = "left";
         ctx.shadowColor = "#FFD700";
@@ -2207,11 +2217,22 @@ function drawMisiones() {
         ctx.shadowBlur = 0;
         ctx.fillText(completada ? "✅" : "❌", cardX + cardWidth - 20, y + 32);
 
-        // Descripción - debajo del nombre
-        ctx.font = "19px 'Press Start 2P', Arial";
-        ctx.fillStyle = "#23f3ea";
+        // Descripción - AJUSTE DE TAMAÑO
         ctx.textAlign = "left";
-        ctx.fillText(mision.descripcion, cardX + 20, y + 58);
+        ctx.fillStyle = "#23f3ea";
+        let descripcion = mision.descripcion;
+        let fontBase = 19; // px
+        let fontSize = fontBase;
+        ctx.font = fontBase + "px 'Press Start 2P', Arial";
+        let descWidth = ctx.measureText(descripcion).width;
+        if (descWidth > cardWidth - 60) {
+            while (descWidth > cardWidth - 60 && fontSize > 12) {
+                fontSize -= 1;
+                ctx.font = fontSize + "px 'Press Start 2P', Arial";
+                descWidth = ctx.measureText(descripcion).width;
+            }
+        }
+        ctx.fillText(descripcion, cardX + 20, y + 58);
 
         // Recompensa - debajo de descripción
         ctx.font = "bold 18px 'Press Start 2P', Arial";
