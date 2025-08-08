@@ -507,6 +507,10 @@ if (e.code === "KeyM") {
                 }
                 enemigo.sueltoMoneda = true;
                 localStorage.setItem("monedas", monedas);
+
+                // --- BLOQUE ADICIONAL: Sumar kills a Lanzziano ---
+                killsLanzziano++;
+                actualizarProgresoMision();
             }
         }
     }
@@ -738,32 +742,40 @@ balasCurativas = [];
     if (btnCompraDanio.hover && monedas >= 100 && !upgradeDanio) {
         monedas -= 300;
         upgradeDanio = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeDanio", "true");
+        actualizarProgresoMision();
         return;
     }
     // Compra VELOCIDAD
     if (btnCompraVelocidad.hover && monedas >= 100 && !upgradeVelocidad) {
         monedas -= 200;
         upgradeVelocidad = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeVelocidad", "true");
+        actualizarProgresoMision();
         return;
     }
     // Compra VIDA
     if (btnCompraVida.hover && monedas >= 200 && !upgradeVida) {
         monedas -= 500;
         upgradeVida = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeVida", "true");
+        actualizarProgresoMision();
         return;
     }
     // Compra BONKCHANTI
     if (btnCompraBonkChanti.hover && monedas >= 500 && !upgradeBonkChanti) {
         monedas -= 1250;
         upgradeBonkChanti = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeBonkChanti", "true");
+        actualizarProgresoMision();
         // Si ya estás en partida:
         if (estado === "jugando") {
             bonkchanti = crearBonkChanti();
@@ -775,24 +787,30 @@ balasCurativas = [];
     if (btnCompraMonedasX2.hover && monedas >= 275 && !upgradeMonedasX2) {
         monedas -= 675;
         upgradeMonedasX2 = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeMonedasX2", "true");
+        actualizarProgresoMision();
         return;
     }
     // Compra ARMADURA
     if (btnCompraArmadura.hover && monedas >= 325 && !upgradeArmadura) {
         monedas -= 800;
         upgradeArmadura = true;
+        comprasRealizadas++;
         localStorage.setItem("monedas", monedas);
         localStorage.setItem("upgradeArmadura", "true");
+        actualizarProgresoMision();
         return;
     }
     // Compra OTARIN
 if (btnCompraOtarin.hover && monedas >= 700 && !upgradeOtarin) {
     monedas -= 1850;
     upgradeOtarin = true;
+    comprasRealizadas++;
     localStorage.setItem("monedas", monedas);
     localStorage.setItem("upgradeOtarin", "true");
+    actualizarProgresoMision();
     // Si ya estás en partida:
     if (estado === "jugando") {
         otarin = crearOtarin();
@@ -805,8 +823,10 @@ if (btnCompraOtarin.hover && monedas >= 700 && !upgradeOtarin) {
 if (btnCompraGuille.hover && monedas >= 1275 && !upgradeGuille) {
     monedas -= 2500;
     upgradeGuille = true;
+    comprasRealizadas++;
     localStorage.setItem("monedas", monedas);
     localStorage.setItem("upgradeGuille", "true");
+    actualizarProgresoMision();
     // Si ya estás en partida:
     if (estado === "jugando") {
         guille = crearGuille();
@@ -1258,30 +1278,35 @@ function drawMonedasPartida() {
         for (let j = 0; j < enemigos.length; j++) {
             let enemigo = enemigos[j];
             if (enemigo.vida > 0) {
-                let rect = { x: enemigo.x, y: enemigo.y, width: enemigo.width, height: enemigo.height };
-                let balaRect = { x: bala.x - bala.radio, y: bala.y - bala.radio, width: bala.radio * 2, height: bala.radio * 2 };
-                if (colisiona(balaRect, rect)) {
-                    enemigo.vida -= (bala.danio || 10) * (upgradeDanio ? 2 : 1);
-                    if (enemigo.vida < 0) enemigo.vida = 0;
+    // ... lógica de colisión ...
+    if (colisiona(balaRect, rect)) {
+        enemigo.vida -= (bala.danio || 10) * (upgradeDanio ? 2 : 1);
+        if (enemigo.vida < 0) enemigo.vida = 0;
 
-                    // Suma monedas al morir
-                    if (enemigo.vida <= 0 && !enemigo.sueltoMoneda) {
-                        if (enemigo.tipo === "jefe") {
-                            monedas += 50 * multiplicador;
-                            monedasRecoleccionPartida += 50 * multiplicador;
-                        } else {
-                            monedas += 1 * multiplicador;
-                            monedasRecoleccionPartida += 1 * multiplicador;
-                        }
-                        enemigo.sueltoMoneda = true;
-                        localStorage.setItem("monedas", monedas);
-                    }
-
-                    balas.splice(i, 1);
-                    impact = true;
-                    break;
-                }
+        // Suma monedas al morir
+        if (enemigo.vida <= 0 && !enemigo.sueltoMoneda) {
+            if (enemigo.tipo === "jefe") {
+                monedas += 50 * multiplicador;
+                monedasRecoleccionPartida += 50 * multiplicador;
+            } else {
+                monedas += 1 * multiplicador;
+                monedasRecoleccionPartida += 1 * multiplicador;
             }
+            enemigo.sueltoMoneda = true;
+            localStorage.setItem("monedas", monedas);
+
+            // --- BLOQUE ADICIONAL: Sumar kills a Jhoabxi ---
+            if (bala.color === "#003366") { // Solo balas azules de Jhoabxi
+                killsJhoabxi++;
+                actualizarProgresoMision();
+            }
+        }
+
+        balas.splice(i, 1);
+        impact = true;
+        break;
+    }
+}
         }
         if (impact) continue;
         // Si la bala sale del canvas, se elimina
@@ -1365,30 +1390,32 @@ function drawMonedasPartida() {
 
         // Solo Jhoabxi dispara balas autodirigidas
         if (jugador.nombre === "Jhoabxi") {
-            if (jugador.balaCooldown > 0) jugador.balaCooldown--;
-            if (disparandoJhoabxi && jugador.balaCooldown === 0) {
-                let enemigo = enemigoMasCercano(jugador.x + jugador.width / 2, jugador.y + jugador.height / 2);
-                if (enemigo) {
-                    let ox = jugador.x + jugador.width / 2;
-                    let oy = jugador.y + jugador.height / 2;
-                    let ex = enemigo.x + enemigo.width / 2;
-                    let ey = enemigo.y + enemigo.height / 2;
-                    let dx = ex - ox, dy = ey - oy;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    let vel = 9;
-                    balas.push({
-                        x: ox,
-                        y: oy,
-                        vx: (dx / dist) * vel,
-                        vy: (dy / dist) * vel,
-                        radio: 9,
-                        color: "#003366",
-                        danio: 20
-                    });
-                    jugador.balaCooldown = 15;
-                }
-            }
+    if (jugador.balaCooldown > 0) jugador.balaCooldown--;
+    if (disparandoJhoabxi && jugador.balaCooldown === 0) {
+        let enemigo = enemigoMasCercano(jugador.x + jugador.width / 2, jugador.y + jugador.height / 2);
+        if (enemigo) {
+            let ox = jugador.x + jugador.width / 2;
+            let oy = jugador.y + jugador.height / 2;
+            let ex = enemigo.x + enemigo.width / 2;
+            let ey = enemigo.y + enemigo.height / 2;
+            let dx = ex - ox, dy = ey - oy;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            let vel = 9;
+            balas.push({
+                x: ox,
+                y: oy,
+                vx: (dx / dist) * vel,
+                vy: (dy / dist) * vel,
+                radio: 9,
+                color: "#003366",
+                danio: 20
+            });
+            jugador.balaCooldown = 15;
+        } else {
+            disparandoJhoabxi = false;
         }
+    }
+}
     }
 
     function drawVidaJugador(jugador, offsetY = 0) {
@@ -2315,7 +2342,7 @@ function drawMisiones() {
         borderWidth: 3
     });
 }
-function actualizarProgresoMision(tipo, cantidad = 1) {
+function actualizarProgresoMision() {
     // Refresca upgrades de la tienda antes de chequear
     upgradeDanio = localStorage.getItem("upgradeDanio") === "true";
     upgradeVelocidad = localStorage.getItem("upgradeVelocidad") === "true";
@@ -2328,68 +2355,50 @@ function actualizarProgresoMision(tipo, cantidad = 1) {
 
     misiones.forEach(mision => {
         let key = mision.nombre;
-        if (!progresoMisiones[key]) progresoMisiones[key] = { progreso: 0, completada: false };
-        if (!progresoMisiones[key].completada) {
-            switch (mision.tipo) {
-                case "ronda":
-                    if (ronda >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "rondaSupervivencia":
-                    if (window.modoSupervivencia && ronda >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "killsLanzziano":
-                    progresoMisiones[key].progreso = killsLanzziano;
-                    if (killsLanzziano >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "killsJhoabxi":
-                    progresoMisiones[key].progreso = killsJhoabxi;
-                    if (killsJhoabxi >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "compras":
-                    progresoMisiones[key].progreso = comprasRealizadas;
-                    if (comprasRealizadas >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "comprasTotal":
-                    let totalCompras = [
-                        upgradeDanio, upgradeVelocidad, upgradeVida, upgradeBonkChanti,
-                        upgradeMonedasX2, upgradeArmadura, upgradeOtarin, upgradeGuille
-                    ].filter(Boolean).length;
-                    progresoMisiones[key].progreso = totalCompras;
-                    if (totalCompras >= mision.objetivo) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "compraBonkChanti":
-                    if (upgradeBonkChanti) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "compraOtarin":
-                    if (upgradeOtarin) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "compraGuille":
-                    if (upgradeGuille) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-                case "jefeNormal":
-                    if (!window.modoSupervivencia && jefeFinalDerrotado) {
-                        progresoMisiones[key].completada = true;
-                    }
-                    break;
-            }
+        if (!progresoMisiones[key]) progresoMisiones[key] = { progreso: 0, completada: false, reclamado: false };
+        switch (mision.tipo) {
+            case "ronda":
+                if (ronda >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "rondaSupervivencia":
+                if (window.modoSupervivencia && ronda >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "killsLanzziano":
+                progresoMisiones[key].progreso = killsLanzziano;
+                if (killsLanzziano >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "killsJhoabxi":
+                progresoMisiones[key].progreso = killsJhoabxi;
+                if (killsJhoabxi >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "compras":
+                progresoMisiones[key].progreso = comprasRealizadas;
+                if (comprasRealizadas >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "comprasTotal":
+                let totalCompras = [
+                    upgradeDanio, upgradeVelocidad, upgradeVida, upgradeBonkChanti,
+                    upgradeMonedasX2, upgradeArmadura, upgradeOtarin, upgradeGuille
+                ].filter(Boolean).length;
+                progresoMisiones[key].progreso = totalCompras;
+                if (totalCompras >= mision.objetivo) progresoMisiones[key].completada = true;
+                break;
+            case "compraBonkChanti":
+                if (upgradeBonkChanti) progresoMisiones[key].completada = true;
+                break;
+            case "compraOtarin":
+                if (upgradeOtarin) progresoMisiones[key].completada = true;
+                break;
+            case "compraGuille":
+                if (upgradeGuille) progresoMisiones[key].completada = true;
+                break;
+            case "jefeNormal":
+                if (!window.modoSupervivencia && jefeFinalDerrotado) progresoMisiones[key].completada = true;
+                break;
+        }
+        // Forzar completada si el progreso excede el objetivo
+        if (progresoMisiones[key].progreso >= (mision.objetivo || 1)) {
+            progresoMisiones[key].completada = true;
         }
     });
     localStorage.setItem("progresoMisiones", JSON.stringify(progresoMisiones));
@@ -3161,9 +3170,9 @@ else if (estado === "tienda") {
         }
 
         requestAnimationFrame(loop);
+        actualizarProgresoMision();
     }
 
     loop();
 };
-
 
