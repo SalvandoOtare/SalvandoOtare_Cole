@@ -99,7 +99,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     const itemsTodos = [
     {
         btn: btnCompraDanio,
-        color: "#FA0",
+        color: "rgba(201, 73, 63, 1)",
         icon: "💥",
         name: "Doble Daño",
         price: 300,
@@ -108,7 +108,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     },
     {
         btn: btnCompraVelocidad,
-        color: "#0FF",
+        color: "rgba(183, 226, 226, 1)",
         icon: "💨",
         name: "Doble Velocidad",
         price: 200,
@@ -117,7 +117,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     },
     {
         btn: btnCompraVida,
-        color: "#0F0",
+        color: "rgba(0, 202, 0, 1)",
         icon: "❤️",
         name: "Doble Vida",
         price: 500,
@@ -126,7 +126,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     },
     {
         btn: btnCompraBonkChanti,
-        color: "#C7FF5E",
+        color: "#a9ff09ff",
         icon: "🟩",
         name: "BonkChanti",
         price: 1250,
@@ -135,7 +135,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     },
     {
         btn: btnCompraMonedasX2,
-        color: "#FFD700",
+        color: "#f7d516ff",
         icon: "💰",
         name: "X2 Monedas",
         price: 675,
@@ -144,7 +144,7 @@ const btnCompraArmadura = { x: 660, y: 180, width: 120, height: 120, hover: fals
     },
     {
         btn: btnCompraArmadura,
-        color: "#D9D9D9",
+        color: "#8b8b8bff",
         icon: "🛡️",
         name: "Armadura",
         price: 800,
@@ -651,16 +651,18 @@ if (estado === "menu" && botonMisiones.hover) {
 if (estado === "misiones") {
     if (flechaIzqMisiones.hover && paginaMisiones > 0) {
         paginaMisiones--;
+        drawMisiones(); // <-- repinta tras click
         return;
     }
     if (flechaDerMisiones.hover && (paginaMisiones + 1) * MISIONES_POR_PAGINA < misiones.length) {
         paginaMisiones++;
+        drawMisiones();
         return;
     }
     if (btnSalirMisiones.hover) {
         estado = "menu";
         resetHovers();
-        setTimeout(() => { drawMenu(); }, 100);
+        drawMenu(); // <-- repinta tras salir
         return;
     }
     let misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
@@ -673,6 +675,7 @@ if (estado === "misiones") {
             monedas += mision.recompensa;
             localStorage.setItem("progresoMisiones", JSON.stringify(progresoMisiones));
             localStorage.setItem("monedas", monedas);
+            drawMisiones(); // <-- repinta tras reclamar
         }
     });
 }
@@ -2157,7 +2160,7 @@ function drawMisiones() {
     // Layout: misiones arriba, botón salir abajo
     const cardWidth = 740, cardHeight = 92, cardX = 110;
     const baseY = 140, sepY = 115;
-    const btnWidth = 120, btnHeight = 38;
+    const btnWidth = 100, btnHeight = 32; // REDUCIDO
 
     // Paginación
     const misionesPagina = misiones.slice(paginaMisiones * MISIONES_POR_PAGINA, (paginaMisiones + 1) * MISIONES_POR_PAGINA);
@@ -2168,12 +2171,12 @@ function drawMisiones() {
         let completada = progresoMisiones[key] && progresoMisiones[key].completada;
         let reclamado = progresoMisiones[key] && progresoMisiones[key].reclamado;
 
-        // Cartel retro - bien ancho y alto para leer
+        // Cartel retro
         ctx.save();
         ctx.globalAlpha = 0.97;
         ctx.shadowColor = "#FFD700";
-        ctx.shadowBlur = 15;
-        ctx.lineWidth = 4;
+        ctx.shadowBlur = 12;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = "#FFD700";
         ctx.fillStyle = "#181a2e";
         ctx.beginPath();
@@ -2195,13 +2198,13 @@ function drawMisiones() {
         ctx.shadowBlur = 0;
         ctx.fillText("N. " + mision.nombre, cardX + 20, y + 32);
 
-        // Estado misión
+        // Estado misión con emoji
         ctx.font = "bold 21px 'Press Start 2P', Arial";
         ctx.textAlign = "right";
         ctx.fillStyle = completada ? "#11FF44" : "#FF2222";
         ctx.shadowColor = completada ? "#11FF44" : "#FF2222";
         ctx.shadowBlur = 0;
-        ctx.fillText(completada ? "COMPLETADA" : "NO COMPLETADA", cardX + cardWidth - 22, y + 32);
+        ctx.fillText(completada ? "✅" : "❌", cardX + cardWidth - 20, y + 32);
 
         // Descripción - debajo del nombre
         ctx.font = "19px 'Press Start 2P', Arial";
@@ -2219,8 +2222,8 @@ function drawMisiones() {
 
         // Botón reclamar
         let btnReclamar = {
-            x: cardX + cardWidth - btnWidth - 22,
-            y: y + cardHeight - btnHeight - 10,
+            x: cardX + cardWidth - btnWidth - 18,
+            y: y + cardHeight - btnHeight - 8,
             width: btnWidth,
             height: btnHeight,
             hover: mision.btnReclamarHover || false
@@ -2236,21 +2239,21 @@ function drawMisiones() {
                     : ["#888", "#444"],
                 borderColor: puedeReclamar ? "#FFD700" : "#888",
                 fontColor: "#222",
-                fontSize: 21,
+                fontSize: 17,
                 shadowColor: btnReclamar.hover ? "#23f3ea" : "#FFD700",
-                borderWidth: puedeReclamar ? 4 : 2
+                borderWidth: puedeReclamar ? 3 : 2
             }
         );
         mision._btnReclamar = btnReclamar;
     });
 
-    // Flechas de paginación (centradas vertical respecto a las misiones)
+    // Flechas de paginación (más pequeñas y centradas)
     let flechaY = baseY + sepY * 1.1;
-    flechaIzqMisiones.x = cardX - 60;
+    flechaIzqMisiones.x = cardX - 38;
     flechaIzqMisiones.y = flechaY;
-    flechaIzqMisiones.width = flechaDerMisiones.width = 54;
-    flechaIzqMisiones.height = flechaDerMisiones.height = 54;
-    flechaDerMisiones.x = cardX + cardWidth + 10;
+    flechaIzqMisiones.width = flechaDerMisiones.width = 38;
+    flechaIzqMisiones.height = flechaDerMisiones.height = 38;
+    flechaDerMisiones.x = cardX + cardWidth + 5;
     flechaDerMisiones.y = flechaY;
 
     drawButton(
@@ -2260,9 +2263,9 @@ function drawMisiones() {
             gradColors: flechaIzqMisiones.hover ? ["#23f3ea", "#FFD700"] : ["#FFD700", "#23f3ea"],
             borderColor: "#FFD700",
             fontColor: "#222",
-            fontSize: 42,
+            fontSize: 26,
             shadowColor: "#23f3ea",
-            borderWidth: 6
+            borderWidth: 3
         }
     );
     drawButton(
@@ -2272,24 +2275,24 @@ function drawMisiones() {
             gradColors: flechaDerMisiones.hover ? ["#23f3ea", "#FFD700"] : ["#FFD700", "#23f3ea"],
             borderColor: "#FFD700",
             fontColor: "#222",
-            fontSize: 42,
+            fontSize: 26,
             shadowColor: "#23f3ea",
-            borderWidth: 6
+            borderWidth: 3
         }
     );
 
-    // Botón salir - bien abajo y centrado
-    btnSalirMisiones.x = canvas.width / 2 - 120;
-    btnSalirMisiones.y = baseY + sepY * MISIONES_POR_PAGINA + 40;
-    btnSalirMisiones.width = 240;
-    btnSalirMisiones.height = 56;
+    // Botón salir - más arriba y pequeño
+    btnSalirMisiones.x = canvas.width / 2 - 70;
+    btnSalirMisiones.y = baseY + sepY * MISIONES_POR_PAGINA + 12;
+    btnSalirMisiones.width = 140;
+    btnSalirMisiones.height = 38;
     drawButton(btnSalirMisiones, "SALIR", {
         gradColors: btnSalirMisiones.hover ? ["#FFD700", "#23f3ea"] : ["#FFD700", "#333"],
         borderColor: "#FFD700",
         fontColor: "#222",
-        fontSize: 34,
+        fontSize: 22,
         shadowColor: "#23f3ea",
-        borderWidth: 7
+        borderWidth: 3
     });
 }
 function actualizarProgresoMision(tipo, cantidad = 1) {
@@ -2611,7 +2614,7 @@ function actualizarProgresoMision(tipo, cantidad = 1) {
         
         if (estado === "misiones") {
     drawMisiones();
-    return; // Opcional, para que no dibuje otras cosas
+    //no return aquí, sigue el loop normal
 }else if (estado === "jugando") {
             for (let i = 0; i < jugadores.length; i++) {
                 actualizarJugador(jugadores[i], i);
@@ -3152,3 +3155,4 @@ else if (estado === "tienda") {
 
     loop();
 };
+
